@@ -3,24 +3,33 @@ import { UserButton } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { initialProfile } from "@/lib/initial-profile";
 import axios from "axios";
+import { db } from "@/lib/db";
+import InitialModal from "@/components/modals/InitialModal";
 
 export default async function Home() {
   const profile = await initialProfile();
 
-  const { data } = await axios.get(
-    `http://localhost:3001/server/member?userId=${profile._id}`
-  );
-  const server = data;
+  const server = await db.server.findFirst({
+    where: {
+      members: {
+        some: {
+          profileId: profile.id,
+        },
+      },
+    },
+  });
 
-  console.log(server);
-  // if(server){
-  //   return redirect(`/servers/$`)
-  // }
+  if (server) {
+    return redirect(`/servers/${server.id}`);
+  }
 
   return (
     <div>
-      <UserButton afterSignOutUrl="/" />
-      <ModeToggle />
+     <InitialModal />
     </div>
   );
 }
+ {
+   /* <UserButton afterSignOutUrl="/" />
+      <ModeToggle /> */
+ }
