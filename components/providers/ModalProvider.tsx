@@ -2,6 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import CreateServerModal from "../modals/CreateServerModal";
+import InviteModal from "../modals/InviteModal";
+import EditServerModal from "../modals/EditServerModal";
+import MembersModal from "../modals/MembersModal";
 
 const ModalProvider = () => {
   //   Solucion para hidratacion
@@ -16,6 +19,9 @@ const ModalProvider = () => {
   return (
     <>
       <CreateServerModal />
+      <InviteModal />
+      <EditServerModal />
+      <MembersModal />
     </>
   );
 };
