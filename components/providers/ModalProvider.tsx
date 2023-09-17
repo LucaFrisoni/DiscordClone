@@ -10,6 +10,7 @@ import LeaveServerModal from "../modals/LeaveServerModal";
 import DeleteServerModal from "../modals/DeleteServerModal";
 import {DeleteChannelModal} from "../modals/DeleteChannelModal";
 import { EditChannelModal } from "../modals/EditChannelModal";
+import MessageFileModal from "../modals/MessageFileModal";
 
 const ModalProvider = () => {
   //   Solucion para hidratacion
@@ -32,6 +33,7 @@ const ModalProvider = () => {
       <EditChannelModal />
       <DeleteServerModal />
       <DeleteChannelModal />
+      <MessageFileModal />
     </>
   );
 };
