@@ -1,4 +1,4 @@
-import ServerSideBar from "@/components/server/ServerSideBar";
+import { ServerSideBar } from "@/components/server/ServerSideBar";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { redirectToSignIn } from "@clerk/nextjs";

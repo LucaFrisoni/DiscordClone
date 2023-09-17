@@ -1,7 +1,12 @@
 "use client";
+
+import qs from "query-string";
+import axios from "axios";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { ChannelType } from "@prisma/client";
+
 import {
   Dialog,
   DialogContent,
@@ -17,10 +22,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import axios from "axios";
-import { useParams, useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
 import {
   Select,
@@ -29,8 +33,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ChannelType } from "@prisma/client";
-import qs from "query-string";
 import { useEffect } from "react";
 
 const formSchema = z.object({
@@ -45,43 +47,40 @@ const formSchema = z.object({
   type: z.nativeEnum(ChannelType),
 });
 
-const CreateChannelModal = () => {
-  // Con esto soluciona problema de hidratacion
-
+export const EditChannelModal = () => {
   const { isOpen, onClose, type, data } = useModal();
-
-  const isModalOpen = isOpen && type === "createChannel";
-  const { channelType } = data;
   const router = useRouter();
-  const params = useParams();
+
+  const isModalOpen = isOpen && type === "editChannel";
+  const { channel, server } = data;
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      type: channelType || ChannelType.TEXT,
+      type: channel?.type || ChannelType.TEXT,
     },
   });
 
   useEffect(() => {
-    if (channelType) {
-      form.setValue("type", channelType);
-    } else {
-      form.setValue("type", ChannelType.TEXT);
+    if (channel) {
+      form.setValue("name", channel.name);
+      form.setValue("type", channel.type);
     }
-  }, [channelType,form]);
+  }, [form, channel]);
 
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const url = qs.stringifyUrl({
-        url: "/api/channels",
+        url: `/api/channels/${channel?.id}`,
         query: {
-          serverId: params?.serverId,
+          serverId: server?.id,
         },
       });
+      await axios.patch(url, values);
 
-      await axios.post(url, values);
       form.reset();
       router.refresh();
       onClose();
@@ -97,22 +96,22 @@ const CreateChannelModal = () => {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
-      <DialogContent className=" bg-white text-black p-0 overflow-hidden">
-        <DialogHeader className=" pt-8 px-6">
+      <DialogContent className="bg-white text-black p-0 overflow-hidden">
+        <DialogHeader className="pt-8 px-6">
           <DialogTitle className="text-2xl text-center font-bold">
-            Create Channel
+            Edit Channel
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <div className=" space-y-8 px-6">
+            <div className="space-y-8 px-6">
               <FormField
                 control={form.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className=" uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">
-                      Channel Name
+                    <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">
+                      Channel name
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -147,7 +146,7 @@ const CreateChannelModal = () => {
                           <SelectItem
                             key={type}
                             value={type}
-                            className=" capitalize"
+                            className="capitalize"
                           >
                             {type.toLowerCase()}
                           </SelectItem>
@@ -161,7 +160,7 @@ const CreateChannelModal = () => {
             </div>
             <DialogFooter className="bg-gray-100 px-6 py-4">
               <Button variant="primary" disabled={isLoading}>
-                Create
+                Save
               </Button>
             </DialogFooter>
           </form>
@@ -170,5 +169,3 @@ const CreateChannelModal = () => {
     </Dialog>
   );
 };
-
-export default CreateChannelModal;
