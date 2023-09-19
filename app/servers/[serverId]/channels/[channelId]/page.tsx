@@ -1,10 +1,16 @@
-import { currentProfile } from "@/lib/current-profile";
 import { redirectToSignIn } from "@clerk/nextjs";
-import React from "react";
-import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
-import ChatHeader from "@/components/chat/ChatHeader";
-import ChatInput from "@/components/chat/ChatInput";
+import { ChannelType } from "@prisma/client";
+
+import { currentProfile } from "@/lib/current-profile";
+
+
+import { db } from "@/lib/db";
+import { ChatHeader } from "@/components/chat/ChatHeader";
+import { ChatMessages } from "@/components/chat/ChatMessages";
+import { ChatInput } from "@/components/chat/ChatInput";
+import { MediaRoom } from "@/components/media-room";
+
 interface ChannelIdPageProps {
   params: {
     serverId: string;
@@ -24,6 +30,7 @@ const ChannelIdPage = async ({ params }: ChannelIdPageProps) => {
       id: params.channelId,
     },
   });
+
   const member = await db.member.findFirst({
     where: {
       serverId: params.serverId,
@@ -42,13 +49,39 @@ const ChannelIdPage = async ({ params }: ChannelIdPageProps) => {
         serverId={channel.serverId}
         type="channel"
       />
-      <div className=" flex-1">Future Messages</div>
-      <ChatInput
-        name={channel.name}
-        type="channel"
-        apiUrl="/api/socket/messages"
-        query={{ channelId: channel.id, serverId: channel.id }}
-      />
+      {channel.type === ChannelType.TEXT && (
+        <>
+          <ChatMessages
+            member={member}
+            name={channel.name}
+            chatId={channel.id}
+            type="channel"
+            apiUrl="/api/messages"
+            socketUrl="/api/socket/messages"
+            socketQuery={{
+              channelId: channel.id,
+              serverId: channel.serverId,
+            }}
+            paramKey="channelId"
+            paramValue={channel.id}
+          />
+          <ChatInput
+            name={channel.name}
+            type="channel"
+            apiUrl="/api/socket/messages"
+            query={{
+              channelId: channel.id,
+              serverId: channel.serverId,
+            }}
+          />
+        </>
+      )}
+      {channel.type === ChannelType.AUDIO && (
+        <MediaRoom chatId={channel.id} video={false} audio={true} />
+      )}
+      {channel.type === ChannelType.VIDEO && (
+        <MediaRoom chatId={channel.id} video={true} audio={true} />
+      )}
     </div>
   );
 };
