@@ -29,7 +29,3 @@ export default async function Home() {
     </div>
   );
 }
- {
-   /* <UserButton afterSignOutUrl="/" />
-      <ModeToggle /> */
- }

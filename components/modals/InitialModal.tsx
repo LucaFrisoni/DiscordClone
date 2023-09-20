@@ -26,9 +26,14 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
-  name: z.string().min(1, {
-    message: "Server name is required.",
-  }),
+  name: z
+    .string()
+    .min(1, {
+      message: "Server name is required.",
+    })
+    .max(20, {
+      message: "Sever name cannot exceed 20 characters.",
+    }),
   imageUrl: z.string().min(1, {
     message: "Server image is required.",
   }),

@@ -39,6 +39,9 @@ const formSchema = z.object({
     .min(1, {
       message: "Channel name is required.",
     })
+    .max(15, {
+      message: "Channel name cannot exceed 15 characters.",
+    })
     .refine((name) => name !== "general", {
       message: "Channel name cannot be 'general'",
     }),
