@@ -41,4 +41,4 @@ Additionally, you will have a search feature within each server, allowing you to
 
 In particular, the video channel will give you access to your camera and microphone, enabling video conferences with contacts within the channel. As an administrator, you also have the privilege of managing the members of each server, including the ability to remove members and even grant them moderator permissions. A moderator, like an administrator, can delete messages and members.
 
-Furthermore, we offer a personalized chat with a specific member, where you can exchange messages, emojis, images, or PDF files in real-time, thanks to the socket system implemented in the project. Lastly, it's worth mentioning that you can edit both servers and channels, as well as individual messages.
+Furthermore, we offer a personalized chat with a specific member, where you can exchange messages, emojis, images, or PDF files in real-time, thanks to the socket system implemented in the project and also there is an InfiniteLoading Logic so as to improve performance. Lastly, it's worth mentioning that you can edit both servers and channels, as well as individual messages.
