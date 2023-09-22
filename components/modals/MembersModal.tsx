@@ -53,7 +53,7 @@ const MembersModal = () => {
   const isModalOpen = isOpen && type === "members";
 
   const { server } = data as { server: ServerWithMembersWithProfiles };
-console.log("INFO =>",server)
+
 
 
  const onKick = async (memberId: string) => {
